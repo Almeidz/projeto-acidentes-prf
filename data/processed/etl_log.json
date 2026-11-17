@@ -1,0 +1,137 @@
+{
+  "datatran2007.csv": {
+    "linhas_lidas": 127675,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 4,
+    "uf_ausente": 5,
+    "br_ausente": 5,
+    "km_invalido_anulado": 0,
+    "flag_inconsistente": 0
+  },
+  "datatran2008.csv": {
+    "linhas_lidas": 141043,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 5,
+    "uf_ausente": 3,
+    "br_ausente": 3,
+    "km_invalido_anulado": 3,
+    "flag_inconsistente": 0
+  },
+  "datatran2009.csv": {
+    "linhas_lidas": 158646,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 0,
+    "uf_ausente": 0,
+    "br_ausente": 0,
+    "km_invalido_anulado": 28,
+    "flag_inconsistente": 0
+  },
+  "datatran2010.csv": {
+    "linhas_lidas": 183469,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 4,
+    "uf_ausente": 0,
+    "br_ausente": 0,
+    "km_invalido_anulado": 8,
+    "flag_inconsistente": 0
+  },
+  "datatran2011.csv": {
+    "linhas_lidas": 192326,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 4,
+    "uf_ausente": 0,
+    "br_ausente": 0,
+    "km_invalido_anulado": 0,
+    "flag_inconsistente": 0
+  },
+  "datatran2012.csv": {
+    "linhas_lidas": 184568,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 7,
+    "uf_ausente": 4,
+    "br_ausente": 4,
+    "km_invalido_anulado": 19,
+    "flag_inconsistente": 0
+  },
+  "datatran2013.csv": {
+    "linhas_lidas": 186748,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 3,
+    "uf_ausente": 0,
+    "br_ausente": 0,
+    "km_invalido_anulado": 8,
+    "flag_inconsistente": 0
+  },
+  "datatran2014.csv": {
+    "linhas_lidas": 169201,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 4,
+    "uf_ausente": 0,
+    "br_ausente": 0,
+    "km_invalido_anulado": 9,
+    "flag_inconsistente": 0
+  },
+  "datatran2015.csv": {
+    "linhas_lidas": 122161,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 3,
+    "uf_ausente": 0,
+    "br_ausente": 0,
+    "km_invalido_anulado": 2,
+    "flag_inconsistente": 0
+  },
+  "datatran2016.csv": {
+    "linhas_lidas": 96363,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 1,
+    "uf_ausente": 0,
+    "br_ausente": 0,
+    "km_invalido_anulado": 0,
+    "flag_inconsistente": 0
+  },
+  "datatran2017.csv": {
+    "linhas_lidas": 89518,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 0,
+    "uf_ausente": 0,
+    "br_ausente": 146,
+    "km_invalido_anulado": 0,
+    "flag_inconsistente": 0
+  },
+  "datatran2018.csv": {
+    "linhas_lidas": 69206,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 0,
+    "uf_ausente": 0,
+    "br_ausente": 114,
+    "km_invalido_anulado": 0,
+    "flag_inconsistente": 0
+  },
+  "datatran2020.csv": {
+    "linhas_lidas": 63530,
+    "descartadas_sem_data": 0,
+    "descartadas_id_duplicado": 0,
+    "uf_ausente": 0,
+    "br_ausente": 158,
+    "km_invalido_anulado": 0,
+    "flag_inconsistente": 0
+  },
+  "_total": {
+    "linhas_finais": 1784419,
+    "anos": [
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2020
+    ]
+  }
+}

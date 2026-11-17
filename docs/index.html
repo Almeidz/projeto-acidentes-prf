@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acidentes em rodovias federais brasileiras (2007–2020): evolução, gravidade e geografia</title>
+<meta name="description" content="Análise de 1.784.419 ocorrências da PRF com pipeline reprodutível em Python (FAIR).">
+<meta name="author" content="Lucas de Almeida Brugger Cavalcante">
+<style>
+:root{--fg:#1a1a1a;--mut:#555;--bg:#fff;--card:#f6f7f9;--ac:#0b5cab;--bd:#dde1e6}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font:17px/1.65 Georgia,'Times New Roman',serif;color:var(--fg);background:var(--bg)}
+main{max-width:860px;margin:0 auto;padding:1.5rem 1.1rem 4rem}
+h1{font-size:1.9rem;line-height:1.25;margin:.4rem 0}h2{margin-top:2.4rem;border-bottom:2px solid var(--bd);padding-bottom:.2rem}
+h3{margin-top:1.8rem}.meta,.badges,nav,.btn,figcaption,th,.fig-note{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.meta{color:var(--mut);font-size:.95rem}.badges span{display:inline-block;background:var(--card);border:1px solid var(--bd);border-radius:999px;padding:.1rem .7rem;margin:.15rem .2rem .15rem 0;font-size:.8rem}
+.btn{display:inline-block;background:var(--ac);color:#fff;text-decoration:none;padding:.45rem .9rem;border-radius:6px;margin-top:.6rem;font-size:.95rem}
+.abstract{background:var(--card);border-left:4px solid var(--ac);padding:1rem 1.2rem;border-radius:4px}
+nav{font-size:.9rem;margin:1.2rem 0}nav a{margin-right:.8rem;color:var(--ac)}
+figure{margin:1.6rem 0}figure img,.plot{width:100%}figcaption{font-size:.88rem;color:var(--mut);margin-top:.3rem}
+.plot{height:420px}pre{background:#0f172a;color:#e2e8f0;padding:1rem;border-radius:6px;overflow-x:auto;font-size:.82rem;line-height:1.5}
+code{font-family:ui-monospace,Menlo,Consolas,monospace}p code{background:var(--card);padding:.05rem .3rem;border-radius:3px;font-size:.88em}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.88rem;margin:1rem 0}
+th,td{border-bottom:1px solid var(--bd);padding:.35rem .5rem;text-align:right}th:first-child,td:first-child{text-align:left}
+th{background:var(--card)}.pend{background:#fff3bf;padding:0 .25rem;border-radius:3px}
+.fair{background:var(--card);padding:1rem 1.2rem;border-radius:6px}.fair li{margin:.3rem 0}
+.ref{padding-left:0;list-style:none;font-size:.92rem}.ref li{margin:.55rem 0}
+footer{font-family:system-ui,sans-serif;font-size:.85rem;color:var(--mut);margin-top:3rem;border-top:1px solid var(--bd);padding-top:1rem}
+@media(max-width:600px){body{font-size:16px}h1{font-size:1.5rem}.plot{height:340px}}
+</style></head><body><main>
+
+<header>
+<p class="meta">Linguagem de Programação (Análise e Visualização de Dados com Python) · 6º período · Bacharelado em Sistemas de Informação · <span class="pend">[Instituição]</span> · <span class="pend">[Semestre/Ano]</span></p>
+<h1>Acidentes em rodovias federais brasileiras (2007–2020): evolução, gravidade e distribuição geográfica das mortes</h1>
+<p class="meta"><strong>Lucas de Almeida Brugger Cavalcante</strong>, <span class="pend">[Nome do integrante 2]</span>, <span class="pend">[Nome do integrante 3, se houver]</span><br>Bacharelado em Sistemas de Informação, <span class="pend">[Instituição]</span></p>
+<div class="badges"><span>Python · pandas</span><span>Dados abertos PRF</span><span>FAIR</span><span>Código: MIT</span><span>Dados e texto: CC-BY 4.0</span></div>
+<a class="btn" href="https://github.com/Almeidz/projeto-acidentes-prf">Ver repositório no GitHub</a>
+</header>
+
+<nav><a href="#resumo">Resumo</a><a href="#intro">1 Introdução</a><a href="#metodo">2 Metodologia</a><a href="#resultados">3 Resultados</a><a href="#conclusao">4 Conclusão</a><a href="#fair">5 FAIR</a><a href="#refs">6 Referências</a></nav>
+
+<section id="resumo" class="abstract"><h2 style="margin-top:0;border:0">Resumo</h2>
+<p>Este estudo analisa 1.784.419 ocorrências registradas pela Polícia Rodoviária Federal (PRF) nas rodovias federais brasileiras entre 2007 e 2020 (a base utilizada não contém 2019). Um pipeline determinístico em Python unifica 13 arquivos anuais com codificações, formatos de data e taxonomias distintas, registrando todos os descartes. Três perguntas orientam a análise: como evoluíram acidentes e mortes, quais fatores se associam à gravidade e onde se concentram os óbitos. O número de acidentes registrados caiu 50,2% entre 2007 e 2020 e o de mortos, 21,6%, enquanto a letalidade passou de 5,3 para 8,3 mortos por 100 acidentes. Em paralelo, a parcela de acidentes sem vítimas caiu de 59% para 18%, indício de que o critério de registro mudou. Acidentes em plena noite têm 2,3 vezes a proporção de casos fatais dos ocorridos em pleno dia, e as noites de fim de semana concentram os picos de mortes. Minas Gerais lidera em mortes absolutas; Maranhão e Tocantins, em letalidade. Discutem-se as limitações dos dados e a necessidade de normalizar por volume de tráfego em trabalhos futuros.</p>
+<p><strong>Palavras-chave:</strong> acidentes de trânsito; rodovias federais; Polícia Rodoviária Federal; análise exploratória; dados abertos.</p></section>
+
+<section id="intro"><h2>1. Introdução</h2>
+<p>Os acidentes nas rodovias federais geram custo humano e econômico expressivo para o país. A Polícia Rodoviária Federal (PRF) publica, em formato aberto, os registros de cada ocorrência atendida, o que permite estudar séries longas e identificar padrões úteis para fiscalização e políticas de prevenção. Esses registros, porém, foram produzidos por mais de uma década com colunas, categorias e critérios que mudaram ao longo do tempo, e tratá-los como uma série homogênea é um risco metodológico que este trabalho procura explicitar.</p>
+<p>O estudo busca responder às seguintes perguntas de pesquisa:</p>
+<ul>
+<li><strong>RQ1.</strong> Como evoluíram o número de acidentes, de mortos e a letalidade entre 2007 e 2020, e essa evolução é comparável ao longo do período?</li>
+<li><strong>RQ2.</strong> Quais causas, tipos de acidente e condições (hora, dia da semana, fase do dia, clima) se associam à maior gravidade?</li>
+<li><strong>RQ3.</strong> Em quais estados e trechos de rodovia se concentram as mortes?</li></ul></section>
+
+<section id="metodo"><h2>2. Metodologia e pipeline de dados</h2>
+<h3>2.1 Fonte e granularidade</h3>
+<p>Os dados são os arquivos <code>datatran</code> da PRF, na versão agrupada por ocorrência disponível no Kaggle (<a href="https://www.kaggle.com/datasets/equeiroz/acidentes-rodovias-federais-brasil-jan07-a-jul19">equeiroz</a>), cuja origem é o portal de <a href="https://www.gov.br/prf/pt-br/acesso-a-informacao/dados-abertos/dados-abertos-da-prf">dados abertos da PRF</a>. Cada linha é <em>um acidente</em>, com data, hora, local (UF, BR, km, município), causa, tipo, condições e contagens de pessoas, mortos, feridos e veículos. O arquivo de 2019 não está presente na base utilizada, portanto a série tem 13 anos, com uma lacuna entre 2018 e 2020.</p>
+<h3>2.2 Tratamento</h3>
+<p>A auditoria inicial mostrou que os arquivos não são diretamente empilháveis: a codificação é <code>latin-1</code> até 2018 e <code>utf-8</code> em 2020; há três formatos de data; as colunas <code>latitude</code>, <code>longitude</code>, <code>regional</code>, <code>delegacia</code> e <code>uop</code> só existem a partir de 2017; o separador decimal de <code>km</code> alterna entre vírgula e ponto; há espaços à direita nos textos de 2017; o texto literal <code>(null)</code> representa ausência; e as categorias mudaram de grafia e granularidade (por exemplo, "Falta de atenção" e "Falta de atenção à condução"; "Ignorada" e "Ignorado"). As causas, com 64 grafias distintas após a normalização de texto, foram agrupadas em 11 grupos por regras explícitas em <code>src/etl.py</code>. A coluna <code>uso_solo</code> foi descartada porque mudou de significado (Urbano/Rural até 2016; Sim/Não a partir de 2017).</p>
+<pre><code>def normalizar_texto(s: pd.Series) -&gt; pd.Series:
+    """strip, minúsculas, sem acentos, espaços colapsados; '(null)' -&gt; NA."""
+    s = s.astype("string").str.strip()
+    s = s.str.normalize("NFKD").str.encode("ascii", "ignore").str.decode("ascii")
+    s = s.str.lower().str.replace(r"\s+", " ", regex=True)
+    return s.mask(s.isin(NULL_TOKENS))
+
+def parse_data(s: pd.Series) -&gt; pd.Series:
+    # Três formatos observados: AAAA-MM-DD, DD/MM/AAAA e DD/MM/AA
+    out = pd.Series(pd.NaT, index=s.index, dtype="datetime64[ns]")
+    for regex, fmt in ((r"^\d{4}-\d{2}-\d{2}$", "%Y-%m-%d"),
+                       (r"^\d{2}/\d{2}/\d{4}$", "%d/%m/%Y"),
+                       (r"^\d{2}/\d{2}/\d{2}$", "%d/%m/%y")):
+        m = s.str.match(regex, na=False)
+        if m.any():
+            out[m] = pd.to_datetime(s[m], format=fmt)
+    return out
+
+# km fora de [0, 5000] é erro de digitação -&gt; NaN (contado no log)
+km_invalido = df["km"].notna() & ~df["km"].between(0, KM_MAX)
+df.loc[km_invalido, "km"] = np.nan</code></pre>
+<p>O <code>id</code> não é único na série completa (os mesmos números se repetem em anos diferentes, designando acidentes distintos); a chave é o par (<code>ano</code>, <code>id</code>). Dentro de um mesmo arquivo, os poucos <code>id</code> repetidos correspondem ao mesmo acidente listado duas vezes com clima ou tipo de pista divergentes, e mantivemos a primeira linha. Nenhuma operação é destrutiva sem registro: os descartes e as anulações são contados por arquivo em <code>data/processed/etl_log.json</code>, e registros logicamente inconsistentes (mortos + feridos &gt; pessoas) seriam apenas sinalizados — não houve nenhum. Métricas derivadas: <code>ano</code>, <code>hora</code>, <code>gravidade</code> (fatal, com feridos, sem vítimas), <code>causa_grupo</code> e, nas análises, a <em>letalidade</em> (mortos por 100 acidentes) e o <em>% de acidentes fatais</em> (acidentes com ao menos uma morte).</p>
+<div class="tw"><table><thead><tr><th>Etapa</th><th>Qtde</th></tr></thead><tbody><tr><td>Linhas lidas (13 arquivos)</td><td>1.784.454</td></tr><tr><td>Descartadas: <code>id</code> repetido no mesmo arquivo (mantida a 1ª linha)</td><td>35</td></tr><tr><td>Valores de <code>km</code> inválidos anulados (→ NaN)</td><td>77</td></tr><tr><td><code>uf</code> ausente (mantidas)</td><td>12</td></tr><tr><td><code>br</code> ausente (mantidas)</td><td>430</td></tr><tr><td>Linhas finais</td><td>1.784.419</td></tr></tbody></table></div>
+<pre><code># Letalidade = mortos por 100 acidentes; % fatais = acidentes com ao menos 1 morte
+g = df.groupby("ano").agg(acidentes=("id", "size"), mortos=("mortos", "sum"),
+                          fatais=("fatal", "sum"))
+g["letalidade"] = g["mortos"] / g["acidentes"] * 100
+
+# Trechos críticos: UF + BR + janela de 10 km
+d["janela"] = (d["km"] // 10 * 10).astype(int)
+g = d.groupby(["uf", "br", "janela"]).agg(acidentes=("id", "size"), mortos=("mortos", "sum"))</code></pre></section>
+
+<section id="resultados"><h2>3. Resultados e discussão</h2>
+<h3>3.1 RQ1 — Evolução temporal</h3>
+<p>O número de acidentes registrados atingiu o pico em 2011 (192.322) e chegou a 63.530 em 2020, uma queda de 67,0% em relação ao pico. O número de mortos teve o máximo em 2011 (8.675) e fechou a série em 5.289 (queda de 39,0%). Como os acidentes caíram bem mais que as mortes, a letalidade subiu de 4,51 (2013) para 8,33 (2020).</p>
+<div id="p-anual" class="plot"></div>
+<figure><img src="assets/fig1_anual.png" alt="Acidentes e mortos por ano, 2007–2020" loading="lazy"><figcaption>Figura 1. Acidentes (barras) e mortos (linha) por ano. Versão estática do gráfico interativo acima.</figcaption></figure>
+<p>Essa leitura exige cautela. A Figura 2 mostra que a parcela de acidentes <em>sem vítimas</em> era estável, entre 59% e 62%, até 2014 e despenca depois, chegando a 18,2% em 2020. Se a segurança tivesse melhorado de forma homogênea, esperaríamos queda proporcional nos três tipos de acidente. O que se observa é que os acidentes mais leves "somem" muito mais rápido que os fatais — padrão compatível com mudança no que a PRF passou a registrar ou atender, ou com uma combinação disso com redução real do tráfego e dos acidentes. Os dados não permitem separar essas hipóteses. Por isso, a letalidade não deve ser lida como piora da segurança, e as contagens de mortes (presumivelmente menos sensíveis ao critério de registro, pois acidentes fatais dificilmente deixam de ser atendidos) são o indicador mais confiável da série.</p>
+<figure><img src="assets/fig2_letalidade_registro.png" alt="Letalidade e percentual de acidentes sem vítimas por ano" loading="lazy"><figcaption>Figura 2. Letalidade (mortos por 100 acidentes) e % de acidentes sem vítimas.</figcaption></figure>
+<div class="tw"><div class="tw"><table><thead><tr><th>Ano</th><th>Acidentes</th><th>Mortos</th><th>Mortos/100 acid.</th><th>% sem vítimas</th></tr></thead><tbody><tr><td>2007</td><td>127.671</td><td>6.742</td><td>5,28</td><td>59,4%</td></tr><tr><td>2008</td><td>141.038</td><td>6.914</td><td>4,90</td><td>60,8%</td></tr><tr><td>2009</td><td>158.646</td><td>7.341</td><td>4,63</td><td>61,6%</td></tr><tr><td>2010</td><td>183.465</td><td>8.623</td><td>4,70</td><td>62,2%</td></tr><tr><td>2011</td><td>192.322</td><td>8.675</td><td>4,51</td><td>62,3%</td></tr><tr><td>2012</td><td>184.561</td><td>8.663</td><td>4,69</td><td>61,7%</td></tr><tr><td>2013</td><td>186.745</td><td>8.426</td><td>4,51</td><td>61,9%</td></tr><tr><td>2014</td><td>169.197</td><td>8.234</td><td>4,87</td><td>59,1%</td></tr><tr><td>2015</td><td>122.158</td><td>6.866</td><td>5,62</td><td>49,1%</td></tr><tr><td>2016</td><td>96.362</td><td>6.398</td><td>6,64</td><td>37,5%</td></tr><tr><td>2017</td><td>89.518</td><td>6.245</td><td>6,98</td><td>34,3%</td></tr><tr><td>2018</td><td>69.206</td><td>5.269</td><td>7,61</td><td>22,0%</td></tr><tr><td>2020</td><td>63.530</td><td>5.289</td><td>8,33</td><td>18,2%</td></tr></tbody></table></div></div>
+
+<h3>3.2 RQ2 — Fatores associados à gravidade</h3>
+<p><strong>Causas.</strong> O maior grupo em mortes é "Outras / ignorada" (32.461 mortos), que reúne principalmente a categoria genérica "Outras" das taxonomias antigas e, por isso, é pouco informativo. Entre as causas identificadas, lideram falta de atenção (19.541 mortos), desobediência às normas (12.869) e velocidade incompatível (11.346). Em gravidade, os grupos de pedestre (28,1% dos acidentes do grupo terminam em morte) e de desobediência às normas (7,6%) se destacam, ao passo que "distância de segurança" (0,67%) gera muitos acidentes, mas poucas mortes. O grupo "Pedestre" só aparece com esse nome na taxonomia pós-2017 e, portanto, subestima atropelamentos de períodos anteriores.</p>
+<figure><img src="assets/fig3_causas.png" alt="Mortos e percentual de acidentes fatais por grupo de causa" loading="lazy"><figcaption>Figura 3. Mortos e % de acidentes fatais por grupo de causa (2007–2020).</figcaption></figure>
+<p><strong>Tipo de acidente.</strong> Em número de mortes, a colisão frontal é o tipo mais grave (28.548 mortos; 27,1% das ocorrências são fatais), seguida pelo atropelamento de pessoa (27,9% fatais). A colisão traseira, o tipo mais frequente, é comparativamente pouco letal (1,4%).</p>
+<figure><img src="assets/fig6_tipos.png" alt="Tipos de acidente por percentual de casos fatais" loading="lazy"><figcaption>Figura 4. Tipos de acidente com maior proporção de casos fatais.</figcaption></figure>
+<p><strong>Quando.</strong> O domingo às 18h concentra o maior número de mortes de toda a grade (1.823), e sábados e domingos respondem por 40,5% das mortes, ante 28,6% esperados se os dias fossem equivalentes. Acidentes em plena noite são fatais em 6,7% dos casos, contra 2,9% em pleno dia (razão de 2,3). O teste qui-quadrado entre fase do dia e ocorrência de morte é significativo (χ² = 13.515, gl = 3, p &lt; 0,001), mas com <em>n</em> de 1.784.349 qualquer diferença torna-se significativa; o V de Cramér (0,087) indica associação real, porém de efeito pequeno. Condições climáticas adversas não elevam a proporção de casos fatais de forma intuitiva: chuva (3,2%) fica abaixo de céu claro (4,9%), possivelmente porque o condutor reduz a velocidade, e nevoeiro (6,1%) e vento (6,4%) ficam acima. Trata-se de associações, não de efeitos causais: a fase do dia, por exemplo, se confunde com fadiga, álcool e menor visibilidade.</p>
+<div id="p-heat" class="plot" style="height:340px"></div>
+<figure><img src="assets/fig4_heatmap.png" alt="Mapa de calor de mortos por dia da semana e hora" loading="lazy"><figcaption>Figura 5. Mortos por dia da semana e hora (versão estática do gráfico interativo).</figcaption></figure>
+<figure><img src="assets/fig5_fase_clima.png" alt="Percentual de acidentes fatais por fase do dia e clima" loading="lazy"><figcaption>Figura 6. % de acidentes fatais por fase do dia e por condição meteorológica.</figcaption></figure>
+
+<h3>3.3 RQ3 — Onde as mortes se concentram</h3>
+<p>MG lidera em mortes absolutas (13.729), seguido por BA (8.746) e PR (7.896), o que provavelmente reflete a extensão da malha federal e o fluxo de veículos desses estados (não medidos aqui). Em letalidade o quadro muda: MA (12,6 mortos por 100 acidentes) e TO (11,1) superam estados com muito mais acidentes. A correlação de Spearman entre volume de acidentes e letalidade nas UFs é ρ = -0,58 (p = 0,002): estados com mais acidentes tendem a ter menor letalidade, o que pode indicar que muitos acidentes de baixa gravidade em malhas mais urbanizadas diluem a taxa; trata-se de uma hipótese, não testada aqui.</p>
+<div id="p-uf" class="plot"></div>
+<figure><img src="assets/fig7_uf.png" alt="Mortos e letalidade por UF" loading="lazy"><figcaption>Figura 7. Mortos (barras) e letalidade (pontos) por UF.</figcaption></figure>
+<p>No nível de trecho (janelas de 10 km), o mais mortal foi <strong>BR-116/SP km 220–229</strong> (Guarulhos), com 213 mortes e 9.365 acidentes. Quase todos os 15 trechos do topo ficam em regiões metropolitanas (Grande São Paulo, Grande Rio, Belém, Fortaleza, Recife, Vitória e Florianópolis), onde a rodovia federal funciona como via urbana, com a exceção de Campos dos Goytacazes (RJ).</p>
+<figure><img src="assets/fig8_trechos.png" alt="Quinze trechos de 10 km com mais mortes" loading="lazy"><figcaption>Figura 8. Os 15 trechos de 10 km com mais mortes.</figcaption></figure>
+<div class="tw"><table><thead><tr><th>Trecho (10 km)</th><th>Município mais frequente</th><th>Acidentes</th><th>Mortos</th></tr></thead><tbody><tr><td>BR-116/SP km 220–229</td><td>Guarulhos</td><td>9.365</td><td>213</td></tr><tr><td>BR-316/PA km 0–9</td><td>Ananindeua</td><td>13.810</td><td>206</td></tr><tr><td>BR-116/SP km 210–219</td><td>Guarulhos</td><td>7.958</td><td>184</td></tr><tr><td>BR-116/RJ km 180–189</td><td>Nova Iguacu</td><td>3.298</td><td>179</td></tr><tr><td>BR-222/CE km 0–9</td><td>Caucaia</td><td>6.354</td><td>172</td></tr><tr><td>BR-116/CE km 0–9</td><td>Fortaleza</td><td>5.690</td><td>171</td></tr><tr><td>BR-116/RJ km 170–179</td><td>Nova Iguacu</td><td>7.586</td><td>157</td></tr><tr><td>BR-381/SP km 80–89</td><td>Sao Paulo</td><td>2.738</td><td>156</td></tr></tbody></table></div></section>
+
+<section id="conclusao"><h2>4. Conclusão</h2>
+<p><strong>RQ1.</strong> Acidentes e mortes registrados caíram ao longo do período, porém não na mesma proporção: a letalidade aparente subiu quando a parcela de acidentes sem vítimas despencou, o que aponta para mudança de registro. Comparações de letalidade entre os anos iniciais e finais devem ser evitadas sem esse controle. <strong>RQ2.</strong> A gravidade associa-se sobretudo ao tipo de acidente (colisão frontal e atropelamentos), à noite e aos fins de semana no fim da tarde e início da noite; a distância de segurança e o clima têm papel menor no desfecho fatal. <strong>RQ3.</strong> As mortes concentram-se em Minas Gerais e Bahia em números absolutos, enquanto Maranhão e Tocantins lideram em letalidade, e os trechos mais mortais ficam, em sua maioria, em regiões metropolitanas.</p>
+<p><strong>Limitações.</strong> (i) O arquivo de 2019 está ausente. (ii) A taxonomia de causas mudou em 2017, e o agrupamento em 11 categorias é uma decisão analítica nossa. (iii) O critério de registro parece ter mudado, o que compromete séries de acidentes e letalidade. (iv) Não há dados de volume de tráfego ou extensão por trecho, de modo que comparamos contagens e proporções entre locais com exposição distinta. (v) Coordenadas só existem a partir de 2017, o que impede mapas da série completa. <strong>Trabalhos futuros:</strong> normalizar por frota ou tráfego (VMD), incluir 2019 e anos recentes, usar as coordenadas para análise espacial e modelar a probabilidade de acidente fatal com regressão logística.</p></section>
+
+<section id="fair"><h2>5. Disponibilidade dos dados e declaração FAIR</h2>
+<div class="fair"><ul>
+<li><strong>Findable:</strong> repositório com README, resumo, palavras-chave e link para a fonte original; autoria e disciplina no cabeçalho.</li>
+<li><strong>Accessible:</strong> repositório público; nenhuma credencial é necessária para executar o ETL a partir dos dados tratados; esta página é servida por GitHub Pages e é responsiva.</li>
+<li><strong>Interoperable:</strong> dados tratados em <code>.csv.gz</code> e dicionário em <code>data/data_dictionary.md</code>.</li>
+<li><strong>Reusable:</strong> código sob licença MIT; dados tratados e texto sob CC-BY 4.0 (os dados originais pertencem à PRF e seguem os termos do portal de dados abertos); dependências com versões fixas em <code>requirements.txt</code>.</li></ul></div>
+<p>Para reproduzir o pipeline completo:</p>
+<pre><code>git clone https://github.com/Almeidz/projeto-acidentes-prf.git
+cd projeto-acidentes-prf
+python -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -r requirements.txt
+# coloque os datatran*.csv em data/raw/ (veja data/raw/README.md)
+python -m src.etl --raw data/raw --out data/processed
+python -m src.build_artigo      # regenera esta página</code></pre></section>
+
+<section id="refs"><h2>6. Referências</h2>
+<ul class="ref">
+<li>BRASIL. Polícia Rodoviária Federal. <strong>Dados abertos da PRF</strong>: acidentes. Disponível em: https://www.gov.br/prf/pt-br/acesso-a-informacao/dados-abertos/dados-abertos-da-prf. Acesso em: 16 nov. 2026.</li>
+<li>EQUEIROZ. <strong>Acidentes rodovias federais Brasil Jan/07 a Dez/20</strong>. Kaggle. Disponível em: https://www.kaggle.com/datasets/equeiroz/acidentes-rodovias-federais-brasil-jan07-a-jul19. Acesso em: 16 nov. 2026.</li>
+<li>HARRIS, C. R. et al. Array programming with NumPy. <strong>Nature</strong>, v. 585, p. 357–362, 2020.</li>
+<li>HUNTER, J. D. Matplotlib: a 2D graphics environment. <strong>Computing in Science &amp; Engineering</strong>, v. 9, n. 3, p. 90–95, 2007.</li>
+<li>MCKINNEY, W. Data structures for statistical computing in Python. In: PYTHON IN SCIENCE CONFERENCE, 9., 2010. <strong>Proceedings…</strong> 2010. p. 56–61.</li>
+<li>PLOTLY TECHNOLOGIES INC. <strong>Collaborative data science</strong>. Montreal, 2015. Disponível em: https://plot.ly.</li>
+<li>VIRTANEN, P. et al. SciPy 1.0: fundamental algorithms for scientific computing in Python. <strong>Nature Methods</strong>, v. 17, p. 261–272, 2020.</li>
+<li>WILKINSON, M. D. et al. The FAIR Guiding Principles for scientific data management and stewardship. <strong>Scientific Data</strong>, v. 3, 160018, 2016.</li></ul></section>
+
+<footer>Texto e figuras sob CC-BY 4.0 · Código sob MIT · Gerado por <code>src/build_artigo.py</code> a partir de <code>data/processed/acidentes_prf_tratado.csv.gz</code>.</footer>
+</main>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>
+const T = {"anual": {"data": [{"type": "bar", "x": ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2020"], "y": [127671, 141038, 158646, 183465, 192322, 184561, 186745, 169197, 122158, 96362, 89518, 69206, 63530], "name": "Acidentes", "marker": {"color": "#1f77b4"}, "hovertemplate": "%{x}: %{y:,} acidentes<extra></extra>"}, {"type": "scatter", "mode": "lines+markers", "x": ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2020"], "y": [6742, 6914, 7341, 8623, 8675, 8663, 8426, 8234, 6866, 6398, 6245, 5269, 5289], "name": "Mortos", "yaxis": "y2", "line": {"color": "#d95f02", "width": 3}, "hovertemplate": "%{x}: %{y:,} mortos<extra></extra>"}], "layout": {"margin": {"t": 30, "r": 60, "l": 60, "b": 50}, "xaxis": {"type": "category", "title": "Ano (2019 ausente na base)"}, "yaxis": {"title": "Acidentes"}, "yaxis2": {"title": "Mortos", "overlaying": "y", "side": "right", "rangemode": "tozero"}, "legend": {"orientation": "h", "y": 1.12}}}, "heatmap": {"data": [{"type": "heatmap", "z": [[488, 390, 323, 283, 327, 583, 628, 514, 439, 357, 369, 451, 354, 408, 492, 467, 489, 570, 804, 722, 561, 486, 379, 366], [231, 199, 201, 206, 289, 414, 457, 436, 350, 343, 339, 365, 316, 382, 477, 467, 464, 580, 799, 759, 614, 553, 409, 381], [242, 220, 176, 193, 260, 461, 483, 445, 375, 323, 318, 336, 353, 364, 465, 457, 496, 540, 841, 765, 606, 521, 428, 428], [320, 276, 240, 229, 370, 461, 537, 457, 400, 356, 339, 358, 341, 448, 486, 516, 486, 543, 796, 831, 644, 552, 510, 412], [279, 296, 261, 322, 404, 581, 600, 574, 390, 353, 383, 372, 430, 453, 532, 570, 612, 696, 1137, 1089, 975, 834, 708, 622], [640, 572, 504, 604, 844, 826, 771, 552, 484, 460, 437, 480, 428, 545, 659, 752, 794, 812, 1360, 1407, 1177, 1019, 902, 780], [690, 621, 636, 755, 979, 984, 737, 516, 483, 462, 483, 486, 435, 525, 714, 835, 956, 1107, 1823, 1786, 1413, 1063, 902, 727]], "x": ["00h", "01h", "02h", "03h", "04h", "05h", "06h", "07h", "08h", "09h", "10h", "11h", "12h", "13h", "14h", "15h", "16h", "17h", "18h", "19h", "20h", "21h", "22h", "23h"], "y": ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"], "colorscale": "YlOrRd", "colorbar": {"title": "Mortos"}, "hovertemplate": "%{y}, %{x}: %{z:,} mortos<extra></extra>"}], "layout": {"margin": {"t": 20, "r": 20, "l": 80, "b": 50}, "yaxis": {"autorange": "reversed"}, "xaxis": {"title": "Hora do acidente"}}}, "scatter": {"data": [{"type": "scatter", "mode": "markers+text", "x": [258405, 98207, 182872, 193247, 154382, 80270, 139655, 71308, 132643, 28549, 45630, 75061, 37295, 27743, 35560, 37158, 38943, 37145, 20281, 33158, 12106, 15240, 15709, 3844, 5058, 2364, 2574], "y": [5.31, 8.91, 4.32, 3.38, 3.8, 6.69, 3.74, 7.21, 3.21, 12.57, 6.87, 3.94, 7.38, 8.87, 6.42, 6.07, 5.67, 5.59, 8.15, 4.42, 11.06, 6.6, 4.16, 10.48, 5.48, 9.52, 6.76], "text": ["MG", "BA", "PR", "SC", "RJ", "GO", "RS", "PE", "SP", "MA", "MT", "ES", "CE", "PI", "MS", "PA", "PB", "RN", "AL", "RO", "TO", "SE", "DF", "RR", "AC", "AM", "AP"], "textposition": "top center", "marker": {"size": [48.0, 33.48182679000655, 31.005317211741566, 27.0458154271979, 25.085002549348097, 23.65736761599534, 23.217422973268263, 22.981426178163012, 20.400029135406804, 18.456697501638867, 17.136863573457646, 16.60951271032122, 16.018063952217933, 15.173137154927526, 14.654526913832033, 14.575861315463616, 14.430184281448028, 14.045596911646879, 12.81608274455532, 12.268337096656712, 11.901230970937432, 10.931021924393619, 9.905455604923883, 9.174156894165634, 8.807050768446354, 8.655546653070143, 8.506956078374245], "color": "#1f77b4", "opacity": 0.7}, "customdata": [[13729], [8746], [7896], [6537], [5864], [5374], [5223], [5142], [4256], [3589], [3136], [2955], [2752], [2462], [2284], [2257], [2207], [2075], [1653], [1465], [1339], [1006], [654], [403], [277], [225], [174]], "hovertemplate": "<b>%{text}</b><br>%{x:,} acidentes<br>%{customdata[0]:,} mortos<br>%{y} mortos/100 acid.<extra></extra>"}], "layout": {"margin": {"t": 20, "r": 20, "l": 60, "b": 60}, "xaxis": {"type": "log", "title": "Acidentes registrados (escala log)"}, "yaxis": {"title": "Mortos por 100 acidentes"}}}};
+const cfg = {responsive: true, displaylogo: false};
+function draw(id, key) {
+  const el = document.getElementById(id);
+  if (typeof Plotly === 'undefined') {
+    el.innerHTML = '<p class="fig-note">Gráfico interativo indisponível offline; veja a versão estática abaixo.</p>'; return;
+  }
+  Plotly.newPlot(el, T[key].data, T[key].layout, cfg);
+}
+draw('p-anual', 'anual'); draw('p-heat', 'heatmap'); draw('p-uf', 'scatter');
+</script></body></html>

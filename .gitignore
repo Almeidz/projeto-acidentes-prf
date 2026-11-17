@@ -1,0 +1,12 @@
+# ambientes e caches
+.venv/
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+.vscode/
+.idea/
+# dados brutos (grandes; ver data/raw/README.md)
+data/raw/*.csv
+data/raw/*.zip
